@@ -148,7 +148,7 @@ size_t utf8_line_length(const utf8_char_t* data)
 {
     size_t n, len = 0;
 
-    for (len = 0; 0 != data[len]; ++len) {
+    for (len = 0; 0 != data[0]; ++len) {
         if (0 < (n = _utf8_newline(data))) {
             return len + n;
         }
