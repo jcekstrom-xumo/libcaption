@@ -351,15 +351,41 @@ libcaption_stauts_t caption_frame_decode(caption_frame_t* frame, uint16_t cc_dat
 
     return frame->status;
 }
+////////////////////////////////////////////////////////////////////////////////
+size_t count_caption_rows_from_text(const utf8_char_t* data)
+{
+    const utf8_char_t* end = data + (ssize_t)strlen(data);
+    size_t count = 0;
 
+    while (data < end) {
+        // skip whitespace at start of line
+        while (data < end && utf8_char_whitespace(data)) {
+            size_t s = utf8_char_length(data);
+            data += s;
+        }
+
+        // get charcter count for wrap (or orest of line)
+        data += utf8_wrap_length(data, SCREEN_COLS);
+        if (data[0] != 0) {
+            ++count;
+        }
+    }
+    return count;
+}
 ////////////////////////////////////////////////////////////////////////////////
 int caption_frame_from_text(caption_frame_t* frame, const utf8_char_t* data)
 {
     ssize_t size = (ssize_t)strlen(data);
     caption_frame_init(frame);
     frame->write = &frame->back;
+    size_t caption_rows = count_caption_rows_from_text(data);
+    // Check to make sure we aren't going to try and write more than 4 rows of captions
+    if (caption_rows > MAX_CAPTION_ROWS) {
+        // TODO: Do something smarter here, like display half now and the rest later?
+        caption_rows = 4;
+    }
 
-    for (size_t r = 0; (*data) && size && r < SCREEN_ROWS;) {
+    for (size_t r = SCREEN_ROWS - caption_rows; (*data) && size && r < SCREEN_ROWS;) {
         // skip whitespace at start of line
         while (size && utf8_char_whitespace(data)) {
             size_t s = utf8_char_length(data);
