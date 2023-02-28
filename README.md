@@ -1,7 +1,3 @@
-# version
-v0.8
-Matthew Szatmary m3u8@twitch.tv / matt@szatmary.org
-
 # libcaption
 
 libcaption is a library written in C to aid in the creating and parsing of closed caption data, open sourced under the MIT license to use within community developed broadcast tools. To maintain consistency across platforms libcaption aims to implement a subset of EIA608, CEA708 as supported by the Apple iOS platform.
@@ -13,6 +9,36 @@ libcaption is a library written in C to aid in the creating and parsing of close
 In addition, utility functions to create h.264 SEI (Supplementary enhancement information) NALUs (Network Abstraction Layer Unit) for inclusion into an h.264 elementary stream are provided.
 
 H.264 utility functions are limited to wrapping the 708 payload into a SEI NALU. This is accomplished by prepending the 708 payload with 3 bytes (nal_unit_type = 6, payloadType = 4, and PayloadSize = variable), and appending a stop bit encoded into a full byte (with a value of 127). In addition if the 708 payload contains an emulated start code, a three byte sequence equaling 0,0,1 an emulation prevention byte (3) is inserted. Functions to reverse this operation are also provided.
+
+# versions
+xumo-0.10.0
+- Fixed issues with stdout output of flv
+  There were debug statements printing to stdout.  Fixed them to print to
+  stderr.
+
+- Changing the order of 608 clear captions to spec
+  previously it was sending an {EOC} - end of caption, then
+  sending {EDM} erase-display-memory, and {ENM} erase-non-display-memory,
+  after.
+     Changes it to {EDM} {ENM} {EOC}
+  credit Chris Gordon
+
+Joey Ekstrom jekstrom@xumo.com
+
+xumo-0.9.0
+- Changed 608 captions to always anchor to the bottom.
+  Because 608 has a 4 row maximum, we drop any caption rows
+  that are past 4. Should revisit this when processing SRT.
+
+- Fix function utf8_line_length
+  Fixed an issue where the character being checked should be the next one,
+  but instead was checking next + len, which made the last caption
+  dissapear.
+
+Joey Ekstrom jekstrom@xumo.com
+
+0.8.0
+Matthew Szatmary m3u8@twitch.tv / matt@szatmary.org
 
 ## Characters
 | | | | | | | | | | | | | | | | | |
