@@ -11,6 +11,8 @@ In addition, utility functions to create h.264 SEI (Supplementary enhancement in
 H.264 utility functions are limited to wrapping the 708 payload into a SEI NALU. This is accomplished by prepending the 708 payload with 3 bytes (nal_unit_type = 6, payloadType = 4, and PayloadSize = variable), and appending a stop bit encoded into a full byte (with a value of 127). In addition if the 708 payload contains an emulated start code, a three byte sequence equaling 0,0,1 an emulation prevention byte (3) is inserted. Functions to reverse this operation are also provided.
 
 # versions
+xumo-0.10.1
+- Fixed bugs in UTF-8 parsing that caused captions to stop after UTF-8 characters.
 xumo-0.10.0
 - Fixed issues with stdout output of flv
   There were debug statements printing to stdout.  Fixed them to print to
